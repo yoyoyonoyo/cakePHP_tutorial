@@ -17,6 +17,7 @@
  * @link          https://cakephp.org CakePHP(tm) Project
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+use Cake\Core\Plugin;
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
@@ -102,3 +103,27 @@ Router::scope('/', function (RouteBuilder $routes) {
  * });
  * ```
  */
+Router::scope(
+    '/articles',
+    ['controller' => 'Articles'],
+    function ($routes) {
+        $routes->connect('/tagged/*', ['action' => 'tags']);
+    }
+);
+
+Router::scope('/', function ($routes) {
+    // デフォルトの home と /pages/* ルートを接続。
+    $routes->connect('/', [
+        'controller' => 'Pages',
+        'action' => 'display', 'home'
+    ]);
+    $routes->connect('/pages/*', [
+        'controller' => 'Pages',
+        'action' => 'display'
+    ]);
+
+    // 規約に基づいたデフォルトルートを接続。
+    $routes->fallbacks();
+});
+
+Plugin::routes();
